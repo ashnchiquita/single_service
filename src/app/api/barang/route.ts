@@ -7,8 +7,8 @@ import {
   BarangReq,
   BarangReqInput,
 } from "@/lib/validation";
-
-// prisma aman
+import { getResponse } from "@/lib/response";
+import { ZodError } from "zod";
 
 export async function GET(req: NextRequest) {
   try {
@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
       perusahaan: req.nextUrl.searchParams.get("perusahaan"),
     } as BarangQueryInput);
 
-    // aman
     const barang = await prisma.barang.findMany({
       where: {
         AND: [
@@ -83,16 +82,19 @@ export async function GET(req: NextRequest) {
       });
     });
 
-    return NextResponse.json({
-      status: "success",
-      message: "Barang successfully fetched",
-      data: result
-    });
-
+    return NextResponse.json(
+      getResponse(true, "Barang successfully fetched", result)
+    );
   } catch (error) {
     console.error(error);
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        getResponse(false, "Zod validations failed", null),
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
-      { status: "error", message: "Internal server error", data: null },
+      getResponse(false, "Internal server error", null),
       { status: 500 }
     );
   }
@@ -102,7 +104,6 @@ export async function POST(req: NextRequest) {
   try {
     const data = BarangReq.parse((await req.json()) as BarangReqInput);
 
-    // aman
     const barang = await prisma.barang.create({
       data: {
         nama: data.nama,
@@ -126,15 +127,19 @@ export async function POST(req: NextRequest) {
       kode: barang.kode,
     };
 
-    return NextResponse.json({
-      status: "success",
-      message: "Barang successfully created",
-      data: result
-    });
+    return NextResponse.json(
+      getResponse(true, "Barang successfully created", result)
+    );
   } catch (error) {
     console.error(error);
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        getResponse(false, "Zod validations failed", null),
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
-      { status: "error", message: "Internal server error", data: null },
+      getResponse(false, "Internal server error", null),
       { status: 500 }
     );
   }

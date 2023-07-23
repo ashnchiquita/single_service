@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { PerusahaanReqUpdate, PerusahaanReqUpdateInput } from "@/lib/validation";
-
-// prisma aman
+import {
+  PerusahaanReqUpdate,
+  PerusahaanReqUpdateInput,
+} from "@/lib/validation";
+import { getResponse } from "@/lib/response";
+import { ZodError } from "zod";
 
 export async function GET(
   req: NextRequest,
@@ -11,7 +14,6 @@ export async function GET(
   try {
     const { id } = params;
 
-    // aman
     const perusahaan = await prisma.perusahaan.findUnique({
       where: {
         id: id,
@@ -22,33 +24,43 @@ export async function GET(
         alamat: true,
         no_telp: true,
         kode: true,
-      }
+      },
     });
 
     if (!perusahaan) {
-      return NextResponse.json({ message: "Perusahaan not found" }, { status: 400 });
+      return NextResponse.json(
+        getResponse(false, "Perusahaan not found", null),
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json({
-      status: "success",
-      message: "Perusahaan successfully fetched",
-      data: perusahaan
-    });
-  } catch (error) {
     return NextResponse.json(
-      { status: "error", message: "Internal server error", data: null },
+      getResponse(true, "Perusahaan successfully fetched", perusahaan)
+    );
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        getResponse(false, "Zod validations failed", null),
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      getResponse(false, "Internal server error", null),
       { status: 500 }
     );
   }
 }
 
-export async function PATCH(req: NextRequest,
-  { params }: { params: { id: string } }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const { id } = params;
-    const data = PerusahaanReqUpdate.parse((await req.json()) as PerusahaanReqUpdateInput);
+    const data = PerusahaanReqUpdate.parse(
+      (await req.json()) as PerusahaanReqUpdateInput
+    );
 
-    // aman
     const perusahaan = await prisma.perusahaan.update({
       where: {
         id: id,
@@ -61,25 +73,35 @@ export async function PATCH(req: NextRequest,
       },
     });
 
-    return NextResponse.json({
-      status: "success",
-      message: "Perusahaan successfully updated",
-      data: perusahaan
-    });
-  } catch (error) {
     return NextResponse.json(
-      { status: "error", message: "Internal server error", data: null },
+      getResponse(true, "Perusahaan successfully updated", perusahaan)
+    );
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        getResponse(false, "Zod validations failed", null),
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      getResponse(false, "Internal server error", null),
       { status: 500 }
     );
   }
 }
 
-export async function DELETE(req: NextRequest,
-  { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const { id } = params;
+    const toBeDeleted = await prisma.perusahaan.findUnique({
+      where: {
+        id: id,
+      },
+    });
 
-    // aman
     const barang = prisma.barang.deleteMany({
       where: {
         perusahaan_id: id,
@@ -93,14 +115,18 @@ export async function DELETE(req: NextRequest,
     });
 
     await prisma.$transaction([barang, perusahaan]);
-    return NextResponse.json({
-      status: "success",
-      message: "Perusahaan successfully deleted",
-      data: perusahaan
-    });
-  } catch (error) {
     return NextResponse.json(
-      { status: "error", message: "Internal server error", data: null },
+      getResponse(true, "Perusahaan successfully deleted", toBeDeleted)
+    );
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        getResponse(false, "Zod validations failed", null),
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      getResponse(false, "Internal server error", null),
       { status: 500 }
     );
   }

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { PerusahaanQuery, PerusahaanQueryInput, PerusahaanReq, PerusahaanReqInput } from "@/lib/validation";
-
-// prisma oke
+import { getResponse } from "@/lib/response";
+import { ZodError } from "zod";
 
 export async function GET(req: NextRequest) {
   try {
@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
       q: req.nextUrl.searchParams.get("q"),
     }) as PerusahaanQueryInput);
 
-    // aman
     const perusahaan = await prisma.perusahaan.findMany({
       where: {
         OR: [
@@ -37,14 +36,18 @@ export async function GET(req: NextRequest) {
       }
     });
 
-    return NextResponse.json({
-      status: "success",
-      message: "Perusahaan successfully fetched",
-      data: perusahaan
-    });
-  } catch (error) {
     return NextResponse.json(
-      { status: "error", message: "Internal server error", data: null },
+      getResponse(true, "Perusahaan successfully fetched", perusahaan)
+    );
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        getResponse(false, "Zod validations failed", null),
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      getResponse(false, "Internal server error", null),
       { status: 500 }
     );
   }
@@ -54,7 +57,6 @@ export async function POST(req: NextRequest) {
   try {
     const data = PerusahaanReq.parse((await req.json()) as PerusahaanReqInput);
 
-    // aman
     const perusahaan = await prisma.perusahaan.create({
       data: {
         nama: data.nama,
@@ -64,14 +66,18 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      status: "success",
-      message: "Perusahaan successfully created",
-      data: perusahaan
-    });
-  } catch (error) {
     return NextResponse.json(
-      { status: "error", message: "Internal server error", data: null },
+      getResponse(true, "Perusahaan successfully created", perusahaan),
+    );
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        getResponse(false, "Zod validations failed", null),
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      getResponse(false, "Internal server error", null),
       { status: 500 }
     );
   }
