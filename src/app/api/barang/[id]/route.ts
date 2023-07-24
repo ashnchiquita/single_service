@@ -16,6 +16,10 @@ interface BarangUpdateData {
   };
 }
 
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json(null, { status: 200 });
+}
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }

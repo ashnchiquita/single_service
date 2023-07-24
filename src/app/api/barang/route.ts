@@ -10,11 +10,15 @@ import {
 import { getResponse } from "@/lib/response";
 import { ZodError } from "zod";
 
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json(null, { status: 200 });
+}
+
 export async function GET(req: NextRequest) {
   try {
     const query = BarangQuery.parse({
-      q: req.nextUrl.searchParams.get("q"),
-      perusahaan: req.nextUrl.searchParams.get("perusahaan"),
+      q: req.nextUrl.searchParams.get("q") || "",
+      perusahaan: req.nextUrl.searchParams.get("perusahaan") || "",
     } as BarangQueryInput);
 
     const barang = await prisma.barang.findMany({

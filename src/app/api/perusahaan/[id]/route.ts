@@ -6,7 +6,9 @@ import {
 } from "@/lib/validation";
 import { getResponse } from "@/lib/response";
 import { ZodError } from "zod";
-
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json(null, { status: 200 });
+}
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }

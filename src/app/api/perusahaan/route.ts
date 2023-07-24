@@ -7,7 +7,7 @@ import { ZodError } from "zod";
 export async function GET(req: NextRequest) {
   try {
     const query = PerusahaanQuery.parse(({
-      q: req.nextUrl.searchParams.get("q"),
+      q: req.nextUrl.searchParams.get("q") || "",
     }) as PerusahaanQueryInput);
 
     const perusahaan = await prisma.perusahaan.findMany({
@@ -81,4 +81,8 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json(null, { status: 200 });
 }

@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getResponse } from "@/lib/response";
 
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json(null, { status: 200 });
+}
+
 export async function GET(req: NextRequest) {
   const id = req.headers.get("X-USER-ID");
 
