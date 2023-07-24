@@ -78,7 +78,8 @@ export async function POST(req: NextRequest) {
       );
     }
     return NextResponse.json(
-      getResponse(false, "Internal server error", null),
+      // getResponse(false, "Internal server error", null),
+      { status: "error", message:"capek", err: err, data: null },
       { status: 500 }
     );
   }
