@@ -19,9 +19,13 @@ export async function signJWT(
   }
 }
 
-export async function verifyJWT <T> (token: string) {
+export async function verifyJWT(token: string) {
   try {
-    return (await jwtVerify(token, jwtSecret)).payload as T;
+    const verifiedPayload = (await jwtVerify(token, jwtSecret)).payload;
+    if (!verifiedPayload.sub) {
+      throw new Error("Invalid token");
+    }
+    return verifiedPayload.sub;
   } catch (err) {
     console.error(err);
     throw new Error("Expired token");

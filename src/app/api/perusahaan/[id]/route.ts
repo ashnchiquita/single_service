@@ -6,9 +6,12 @@ import {
 } from "@/lib/validation";
 import { getResponse } from "@/lib/response";
 import { ZodError } from "zod";
+import { Prisma } from "@prisma/client";
+
 export async function OPTIONS(req: NextRequest) {
   return NextResponse.json(null, { status: 200 });
 }
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -46,6 +49,14 @@ export async function GET(
         { status: 400 }
       );
     }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, error.message.replace(/\s{2,}/g, " ").slice(1), null),
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       getResponse(false, "Internal server error", null),
       { status: 500 }
@@ -53,14 +64,14 @@ export async function GET(
   }
 }
 
-export async function PATCH(
+export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const { id } = params;
     const data = PerusahaanReqUpdate.parse(
-      (await req.json()) as PerusahaanReqUpdateInput
+      (await req.json())
     );
 
     const perusahaan = await prisma.perusahaan.update({
@@ -79,12 +90,21 @@ export async function PATCH(
       getResponse(true, "Perusahaan successfully updated", perusahaan)
     );
   } catch (error) {
+    console.error(error);
     if (error instanceof ZodError) {
       return NextResponse.json(
         getResponse(false, "Zod validations failed", null),
         { status: 400 }
       );
     }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, error.message.replace(/\s{2,}/g, " ").slice(1), null),
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       getResponse(false, "Internal server error", null),
       { status: 500 }
@@ -127,6 +147,14 @@ export async function DELETE(
         { status: 400 }
       );
     }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, error.message.replace(/\s{2,}/g, " ").slice(1), null),
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       getResponse(false, "Internal server error", null),
       { status: 500 }

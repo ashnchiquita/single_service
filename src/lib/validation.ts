@@ -6,8 +6,8 @@ export const LoginReq = z.object({
 });
 
 export const BarangQuery = z.object({
-  q: z.string(),
-  perusahaan: z.string()
+  q: z.string().optional(),
+  perusahaan: z.string().optional()
 });
 
 export const BarangReq = z.object({
@@ -27,7 +27,7 @@ export const BarangReqUpdate = z.object({
 });
 
 export const PerusahaanQuery = z.object({
-  q: z.string()
+  q: z.string().optional()
 });
 
 const phoneRegex = new RegExp(

@@ -9,6 +9,7 @@ import {
 } from "@/lib/validation";
 import { getResponse } from "@/lib/response";
 import { ZodError } from "zod";
+import { Prisma } from "@prisma/client";
 
 export async function OPTIONS(req: NextRequest) {
   return NextResponse.json(null, { status: 200 });
@@ -17,9 +18,9 @@ export async function OPTIONS(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const query = BarangQuery.parse({
-      q: req.nextUrl.searchParams.get("q") || "",
-      perusahaan: req.nextUrl.searchParams.get("perusahaan") || "",
-    } as BarangQueryInput);
+      q: req.nextUrl.searchParams.get("q") || undefined,
+      perusahaan: req.nextUrl.searchParams.get("perusahaan") || undefined,
+    });
 
     const barang = await prisma.barang.findMany({
       where: {
@@ -40,23 +41,11 @@ export async function GET(req: NextRequest) {
             ],
           },
           {
-            OR: [
-              {
-                perusahaan: {
-                  nama: {
-                    contains: query.perusahaan,
-                    mode: "insensitive",
-                  },
-                },
+            perusahaan: {
+              id: {
+                equals: query.perusahaan,
               },
-              {
-                perusahaan: {
-                  kode: {
-                    contains: query.perusahaan,
-                  },
-                },
-              },
-            ],
+            },
           },
         ],
       },
@@ -97,6 +86,14 @@ export async function GET(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, error.message.replace(/\s{2,}/g, " ").slice(1), null),
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       getResponse(false, "Internal server error", null),
       { status: 500 }
@@ -106,7 +103,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const data = BarangReq.parse((await req.json()) as BarangReqInput);
+    const data = BarangReq.parse((await req.json()));
 
     const barang = await prisma.barang.create({
       data: {
@@ -142,6 +139,14 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, error.message.replace(/\s{2,}/g, " ").slice(1), null),
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       getResponse(false, "Internal server error", null),
       { status: 500 }

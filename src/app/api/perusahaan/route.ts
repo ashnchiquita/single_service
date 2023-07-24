@@ -3,12 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { PerusahaanQuery, PerusahaanQueryInput, PerusahaanReq, PerusahaanReqInput } from "@/lib/validation";
 import { getResponse } from "@/lib/response";
 import { ZodError } from "zod";
+import { Prisma } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
     const query = PerusahaanQuery.parse(({
       q: req.nextUrl.searchParams.get("q") || "",
-    }) as PerusahaanQueryInput);
+    }));
 
     const perusahaan = await prisma.perusahaan.findMany({
       where: {
@@ -46,6 +47,14 @@ export async function GET(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, error.message.replace(/\s{2,}/g, " ").slice(1), null),
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       getResponse(false, "Internal server error", null),
       { status: 500 }
@@ -55,7 +64,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const data = PerusahaanReq.parse((await req.json()) as PerusahaanReqInput);
+    const data = PerusahaanReq.parse((await req.json()));
 
     const perusahaan = await prisma.perusahaan.create({
       data: {
@@ -70,12 +79,21 @@ export async function POST(req: NextRequest) {
       getResponse(true, "Perusahaan successfully created", perusahaan),
     );
   } catch (error) {
+    console.error(error);
     if (error instanceof ZodError) {
       return NextResponse.json(
         getResponse(false, "Zod validations failed", null),
         { status: 400 }
       );
     }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, error.message.replace(/\s{2,}/g, " ").slice(1), null),
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       getResponse(false, "Internal server error", null),
       { status: 500 }

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { BarangReqUpdate, BarangReqUpdateInput } from "@/lib/validation";
 import { getResponse } from "@/lib/response";
 import { ZodError } from "zod";
+import { Prisma } from "@prisma/client";
 
 interface BarangUpdateData {
   nama: string | undefined;
@@ -47,8 +48,16 @@ export async function GET(
       return NextResponse.json(
         getResponse(false, "Zod validations failed", null),
         { status: 400 }
-    );
+      );
     }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, error.message.replace(/\s{2,}/g, " ").slice(1), null),
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       getResponse(false, "Internal server error", null),
       { status: 500 }
@@ -56,14 +65,14 @@ export async function GET(
   }
 }
 
-export async function PATCH(
+export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const { id } = params;
     const data = BarangReqUpdate.parse(
-      (await req.json()) as BarangReqUpdateInput
+      (await req.json())
     );
 
     const updateData: BarangUpdateData = {
@@ -98,6 +107,14 @@ export async function PATCH(
         { status: 400 }
       );
     }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, error.message.replace(/\s{2,}/g, " ").slice(1), null),
+        { status: 400 }
+      );
+    }
+
 
     return NextResponse.json(
       getResponse(false, "Internal server error", null),
@@ -136,6 +153,14 @@ export async function DELETE(
         { status: 400 }
       );
     }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, error.message.replace(/\s{2,}/g, " ").slice(1), null),
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       getResponse(false, "Internal server error", null),
       { status: 500 }

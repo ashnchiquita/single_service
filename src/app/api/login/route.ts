@@ -5,10 +5,11 @@ import { compare } from "bcryptjs";
 import { LoginReq, LoginReqInput } from "@/lib/validation";
 import { getResponse } from "@/lib/response";
 import { ZodError } from "zod";
+import { Prisma } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
   try {
-    const data = LoginReq.parse((await req.json()) as LoginReqInput);
+    const data = LoginReq.parse((await req.json()));
     const user = await prisma.admin.findUnique({
       where: {
         username: data.username,
@@ -66,6 +67,13 @@ export async function POST(req: NextRequest) {
     if (err instanceof ZodError) {
       return NextResponse.json(
         getResponse(false, "Zod validations failed", null),
+        { status: 400 }
+      );
+    }
+
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json(
+        getResponse(false, err.message.replace(/\s{2,}/g, " ").slice(1), null),
         { status: 400 }
       );
     }
