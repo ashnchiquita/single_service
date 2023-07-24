@@ -77,9 +77,11 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    if (err instanceof Prisma.PrismaClientInitializationError)
     return NextResponse.json(
       // getResponse(false, "Internal server error", null),
-      { status: "error", message:"capek", err: err, data: null },
+      { status: "error", message:"capek", err: err.message, data: null },
       { status: 500 }
     );
   }
