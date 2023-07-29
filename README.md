@@ -20,12 +20,12 @@ Chiquita Ahsanunnisa (13521129)
 
 ## Seeding Command
 1. Create csv files (`admin.csv`, `barang.csv`, `perusahaan.csv`) inside `./prisma/data/`
-2. Put seed data inside that file
+2. Put seed data inside those files
 3. Run `npx prisma db seed`
 
 ## Run Command
 1. Run `npm i`
-2. Create `.env` folder in root directory
+2. Create `.env` folder in `root` directory
 3. Put your database URL (`DATABASE_URL`), JWT secret key (`JWT_SECRET_KEY`), and JWT expiration time in minutes (`JWT_EXPIRATION_TIME`) in `.env` file
 4. Run migration command and if needed, run seeding command
 5. Run `npm run dev`
