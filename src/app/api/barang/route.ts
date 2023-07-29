@@ -18,7 +18,7 @@ export async function OPTIONS(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const query = BarangQuery.parse({
-      q: req.nextUrl.searchParams.get("q") || undefined,
+      q: req.nextUrl.searchParams.get("q") || "",
       perusahaan: req.nextUrl.searchParams.get("perusahaan") || undefined,
     });
 

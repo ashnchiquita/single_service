@@ -1,6 +1,0 @@
-/login          POST
-/self           GET
-/barang         GET, POST
-/barang/:id     GET, UPDATE, DELETE
-/perusahaan     GET, POST
-/perusahaan/:id GET, UPDATE, DELETE
