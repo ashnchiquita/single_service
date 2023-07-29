@@ -45,23 +45,23 @@ Chiquita Ahsanunnisa (13521129)
 Single service implemented using TypeScript with string typing, no `as` and `any` keywoard, and runtime type checking.
 
 ## B05 - Lighthouse
-1. Login (`/login`) with average score 95.5
-![Screen Shot 2023-07-29 at 19 09 15](https://github.com/ashnchiquita/KolMart-Django/assets/88751131/165beebf-ad55-4e90-9c1d-9f727c91be48)
+1. Login (`/login`) with average score 95.5\
+![Screen Shot 2023-07-29 at 19 09 15](https://github.com/ashnchiquita/single_service/assets/88751131/3625d59e-7fe1-4661-873e-ead108dccf83)
 
-3. Register (`/register`) with average score 95.5
-![Screen Shot 2023-07-29 at 19 08 09](https://github.com/ashnchiquita/KolMart-Django/assets/88751131/071da31e-a0da-490b-8671-da5cebec7fb7)
+2. Register (`/register`) with average score 95.5\
+![Screen Shot 2023-07-29 at 19 08 09](https://github.com/ashnchiquita/single_service/assets/88751131/b2b7a3ff-7f67-4d9d-8d5d-dadd28b8e628)
 
-5. Store (`/store`) with average score 97.5
-![Screen Shot 2023-07-29 at 19 09 55](https://github.com/ashnchiquita/KolMart-Django/assets/88751131/42e2520b-0f29-4d47-ad4a-3c32b684b413)
+3. Store (`/store`) with average score 97.5\
+![Screen Shot 2023-07-29 at 19 09 55](https://github.com/ashnchiquita/single_service/assets/88751131/9b29c650-7892-4309-a4fb-2adfd1fd351d)
 
-6. Product (`/product/{product_id}`) with average score 96.25
-![Screen Shot 2023-07-29 at 19 10 37](https://github.com/ashnchiquita/KolMart-Django/assets/88751131/4352c3eb-4e7d-458f-9a05-12b5b2c09219)
+4. Product (`/product/{product_id}`) with average score 96.25\
+![Screen Shot 2023-07-29 at 19 10 37](https://github.com/ashnchiquita/single_service/assets/88751131/14c80be3-fe9b-4a1d-a129-ccb2ae417da8)
 
-8. Cart (`/cart`) with average score 98\
-![Screen Shot 2023-07-29 at 19 14 24](https://github.com/ashnchiquita/KolMart-Django/assets/88751131/d557cd3b-0922-47f6-8033-27e89364ff89)
+5. Cart (`/cart`) with average score 98\
+![Screen Shot 2023-07-29 at 19 14 24](https://github.com/ashnchiquita/single_service/assets/88751131/c365008f-b010-442a-a2b9-813b753d66a5)
 
-9. Orders (`/order`) with average score 98\
-![Screen Shot 2023-07-29 at 19 15 11](https://github.com/ashnchiquita/KolMart-Django/assets/88751131/aaf71197-6e6d-4104-afc6-72976b760d68)
+6. Orders (`/order`) with average score 98\
+![Screen Shot 2023-07-29 at 19 15 11](https://github.com/ashnchiquita/single_service/assets/88751131/285a9f71-3769-457f-a76a-839cdd5fe888)
 
 ## B06 - Responsive Layout
 KolMart frontend is built responsive.
